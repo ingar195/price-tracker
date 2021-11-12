@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+from pushbullet import Pushbullet
 
 
 def get(url):
@@ -12,21 +13,35 @@ def getSpan(soup, attr, txt):
     return soup.find_all('span', attrs={attr: txt})
 
 
+def stripper(string, bef, aft):
+    return ((str(string[0]))[bef:aft])
+
+
+
 def komplett(soup, url):
+    # Get name
+    name = stripper(getSpan(soup, "data-bind", "text: webtext1"), 33, -7)
+    print(f"Name: {name}")
+
     # Get stock
-    stock = getSpan(soup, "class", "stockstatus-stock-details")
-    # Strip stock
-    stock = (str(stock[0]))[40:-22]
+    stock = stripper(getSpan(soup, "class", "stockstatus-stock-details"), 40, -22)
     print(f"Stock: {stock}")
-    
+
     # Get price
-    price = getSpan(soup, "class", "product-price-now")
-    # Strip price
-    price = str(price[0])[59:-9]
+    price = stripper(getSpan(soup, "class", "product-price-now"), 59, -9)
     price = price.replace(u'\xa0', u'')
     print(f"Price: {price}")
 
+    Notify("Update", (f"Stock: {stock}\nPrice: {price}"))
     return price, stock
+
+
+def Notify(Name, CurrentState):
+    apiKey = ""
+    with open("pushbullet_api_key.txt", "r") as f:
+        apiKey = f.readline()
+    pb = Pushbullet(apiKey)
+    pb.push_note(Name, CurrentState)
 
 
 def site(url):
