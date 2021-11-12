@@ -1,0 +1,12 @@
+{
+    "https://www.komplett.no/product/1139425/datautstyr/pc-komponenter/minnebrikker/gskill-trident-z-neo-ddr4-3600mhz-32gb": {
+        "Name": "G.Skill Trident Z Neo DDR4 3600Mhz 32GB",
+        "Price": "2500",
+        "Stock": "20"
+    },
+    "https://www.komplett.no/product/1180525/datautstyr/lagring/harddiskerssd/ssd-m2/patriot-viper-vp4100-2tb-m2-ssd?q=patriot%20viper%20vp4100": {
+        "Name": "Patriot Viper VP4100 2TB M.2 SSD",
+        "Price": "3299",
+        "Stock": "10"
+    }
+}
