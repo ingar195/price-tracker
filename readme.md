@@ -27,7 +27,7 @@ This repo is for tracking prices and stock for websites
         }
     }
     ``` 
-* Then add the script to Windows Task Scheduler(Windows), chron(Linux) or OSX Automator
+* Then add the script to Windows Task Scheduler(Windows), chron(Linux) or OSX Automator, with your desired intervals
 
 
 # Supported sites
