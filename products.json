@@ -1,12 +1,17 @@
 {
-    "https://www.komplett.no/product/1139425/datautstyr/pc-komponenter/minnebrikker/gskill-trident-z-neo-ddr4-3600mhz-32gb": {
-        "Name": "G.Skill Trident Z Neo DDR4 3600Mhz 32GB",
-        "Price": "2500",
-        "Stock": "20"
-    },
-    "https://www.komplett.no/product/1180525/datautstyr/lagring/harddiskerssd/ssd-m2/patriot-viper-vp4100-2tb-m2-ssd?q=patriot%20viper%20vp4100": {
-        "Name": "Patriot Viper VP4100 2TB M.2 SSD",
-        "Price": "3299",
-        "Stock": "10"
-    }
+  "https://www.komplett.no/product/1139425/datautstyr/pc-komponenter/minnebrikker/gskill-trident-z-neo-ddr4-3600mhz-32gb": {
+    "Name": "G.Skill Trident Z Neo DDR4 3600Mhz 32GB",
+    "Price": 2500,
+    "Stock": 17
+  },
+  "https://www.komplett.no/product/1180525/datautstyr/lagring/harddiskerssd/ssd-m2/patriot-viper-vp4100-2tb-m2-ssd?q=patriot%20viper%20vp4100": {
+    "Name": "Patriot Viper VP4100 2TB M.2 SSD",
+    "Price": 3299,
+    "Stock": 10
+  },
+  "https://www.multicom.no/multicom-mesh-a829r-gaming-pc/cat-p/c/p1500016389": {
+    "Name": "Multico AMD Ryzen 5 5600X, 16GB DDR4 RAM, 1TB PCIe SSD, 2TB HDD, GeForce RTX 3080 10GB, 750W, uten operativsy",
+    "Price": 25495,
+    "Stock": 4
+  }
 }
