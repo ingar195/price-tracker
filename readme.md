@@ -37,3 +37,4 @@ This repo is for tracking prices and stock for websites
 # Supported sites
 
 * [Komplett.no](https://www.komplett.no/)
+* [Multicom.no](https://www.multicom.no/)
