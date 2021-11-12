@@ -54,8 +54,7 @@ def site(url, data):
         print(f"Not supported url {url}")
     
 
-def writeConfig(returnFromStore, data, url):
-    
+def writeConfig(returnFromStore, data, url):    
     name = returnFromStore[0]
     price = returnFromStore[1]
     stock = returnFromStore[2]
@@ -65,6 +64,7 @@ def writeConfig(returnFromStore, data, url):
         data[url]["Name"] = name
         data[url]["Price"] = price
         data[url]["Stock"] = stock
+
     else:
         if data[url]["Price"] != price:
             alert.append("Price changed from {} to {}".format(data[url]["Price"], price))
