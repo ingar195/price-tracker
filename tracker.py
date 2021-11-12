@@ -10,25 +10,46 @@ def get(url):
     return soup
 
 
-def getSpan(soup, attr, txt):
-    return soup.find_all('span', attrs={attr: txt})
+def getSpan(soup, types, attr, txt):
+    if attr or txt != None:
+        for item in soup.find_all(types, attrs={attr: txt}):
+            return item
+    elif attr or txt == None:
+        return soup.find_all(types)
 
 
 def stripper(string, bef, aft):
-    return ((str(string[0]))[bef:aft])
+    return (str(string))[bef:aft]
 
 
-def komplett(soup, url):
+def komplett(soup):
     # Get name
-    name = stripper(getSpan(soup, "data-bind", "text: webtext1"), 33, -7)
+    name = stripper(getSpan(soup, "span", "data-bind", "text: webtext1"), 33, -7)
     print(f"Name: {name}")
 
     # Get stock
-    stock = stripper(getSpan(soup, "class", "stockstatus-stock-details"), 40, -22)
+    stock = int(stripper(getSpan(soup, "span", "class", "stockstatus-stock-details"), 40, -22))
     print(f"Stock: {stock}")
 
     # Get price
-    price = stripper(getSpan(soup, "class", "product-price-now"), 59, -9).replace(u'\xa0', u'')
+    price = int(stripper(getSpan(soup, "span", "class", "product-price-now"), 59, -9).replace(u'\xa0', u''))
+    print(f"Price: {price}")
+
+    return name, price, stock
+
+
+def multicom(soup):
+    # Get name
+    name1 = str(getSpan(soup, "span", "class", "_brand_name")).strip('<span class="_brand_name"></')
+    name2 = str(getSpan(soup, "span", "class", "b-product-name__extra")).strip('<span class="b-product-name__extra"></\r\n\t')
+    name = name1 + " " + name2
+
+    # Get stock
+    stock = int(stripper(getSpan(soup, "span", "class", "b-stock-info__amount"), 35, -19))
+    print(f"Stock: {stock}")
+
+    # Get price
+    price = int(stripper(getSpan(soup, "span", "class", "b-product-price_"), 35, -21).replace(u'\xa0', u''))
     print(f"Price: {price}")
 
     return name, price, stock
@@ -50,7 +71,9 @@ def Notify(alert):
 
 def site(url, data):
     if "komplett" in url:
-        writeConfig(komplett(get(url), url), data, url)
+        writeConfig(komplett(get(url)), data, url)
+    elif "multicom" in url:
+        writeConfig(multicom(get(url)), data, url)
     else:
         print(f"Not supported url {url}")
 
