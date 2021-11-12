@@ -47,14 +47,15 @@ def Notify(alert):
                 pb.push_note(alert[0], al)
             cnt += 1
 
-def site(url, data):    
+
+def site(url, data):
     if "komplett" in url:
         writeConfig(komplett(get(url), url), data, url)
     else:
         print(f"Not supported url {url}")
-    
 
-def writeConfig(returnFromStore, data, url):    
+
+def writeConfig(returnFromStore, data, url):
     name = returnFromStore[0]
     price = returnFromStore[1]
     stock = returnFromStore[2]
@@ -68,16 +69,17 @@ def writeConfig(returnFromStore, data, url):
     else:
         if data[url]["Price"] != price:
             alert.append("Price changed from {} to {}".format(data[url]["Price"], price))
-            data[url]["Price"] = price 
+            data[url]["Price"] = price
 
         if data[url]["Stock"] != stock:
             alert.append("Stock changed from {} to {}".format(data[url]["Stock"], stock))
             data[url]["Stock"] = stock
-    
+
     with open(jsonFile, "w+") as f:
-            f.write(json.dumps(data))
+        f.write(json.dumps(data))
 
     Notify(alert)
+
 
 def readConfig():
     with open(jsonFile, "r") as jf:
