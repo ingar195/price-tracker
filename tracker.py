@@ -27,8 +27,7 @@ def komplett(soup, url):
     print(f"Stock: {stock}")
 
     # Get price
-    price = stripper(getSpan(soup, "class", "product-price-now"), 59, -9)
-    price = price.replace(u'\xa0', u'')
+    price = stripper(getSpan(soup, "class", "product-price-now"), 59, -9).replace(u'\xa0', u'')
     print(f"Price: {price}")
 
     Notify("Update", (f"Stock: {stock}\nPrice: {price}"))
