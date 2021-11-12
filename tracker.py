@@ -18,7 +18,7 @@ def stripper(string, bef, aft):
     return ((str(string[0]))[bef:aft])
 
 
-def komplett(soup, url):
+def komplett(soup):
     # Get name
     name = stripper(getSpan(soup, "data-bind", "text: webtext1"), 33, -7)
     print(f"Name: {name}")
@@ -50,7 +50,7 @@ def Notify(alert):
 
 def site(url, data):
     if "komplett" in url:
-        writeConfig(komplett(get(url), url), data, url)
+        writeConfig(komplett(get(url)), data, url)
     else:
         print(f"Not supported url {url}")
 
