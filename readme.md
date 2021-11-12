@@ -27,6 +27,10 @@ This repo is for tracking prices and stock for websites
         }
     }
     ``` 
+* Go to [this site](https://www.pushbullet.com/#settings) and press the Create Access Token button
+* Copy the token
+* Create a file called "pushbullet_api_key.txt" and paste your pushbullet api key inside 
+* Download the pushbullet app on yor phone and sign in
 * Then add the script to Windows Task Scheduler(Windows), chron(Linux) or OSX Automator, with your desired intervals
 
 
