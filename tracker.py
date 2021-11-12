@@ -17,7 +17,6 @@ def stripper(string, bef, aft):
     return ((str(string[0]))[bef:aft])
 
 
-
 def komplett(soup, url):
     # Get name
     name = stripper(getSpan(soup, "data-bind", "text: webtext1"), 33, -7)
