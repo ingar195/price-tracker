@@ -13,7 +13,7 @@ def get(url):
 def getSpan(soup, types, attr, txt):
     if attr or txt != None:
         for item in soup.find_all(types, attrs={attr: txt}):
-            return item
+            return item.text
     elif attr or txt == None:
         return soup.find_all(types)
 
@@ -24,15 +24,15 @@ def stripper(string, bef, aft):
 
 def komplett(soup):
     # Get name
-    name = stripper(getSpan(soup, "span", "data-bind", "text: webtext1"), 33, -7)
+    name = getSpan(soup, "span", "data-bind", "text: webtext1").strip(" stk. på lager")
     print(f"Name: {name}")
 
     # Get stock
-    stock = int(stripper(getSpan(soup, "span", "class", "stockstatus-stock-details"), 40, -22))
+    stock = int(getSpan(soup, "span", "class", "stockstatus-stock-details").strip(" stk. på lager"))
     print(f"Stock: {stock}")
 
     # Get price
-    price = int(stripper(getSpan(soup, "span", "class", "product-price-now"), 59, -9).replace(u'\xa0', u''))
+    price = int(getSpan(soup, "span", "class", "product-price-now").replace(u'\xa0', u'').strip(",-"))
     print(f"Price: {price}")
 
     return name, price, stock
@@ -40,16 +40,18 @@ def komplett(soup):
 
 def multicom(soup):
     # Get name
-    name1 = str(getSpan(soup, "span", "class", "_brand_name")).strip('<span class="_brand_name"></')
-    name2 = str(getSpan(soup, "span", "class", "b-product-name__extra")).strip('<span class="b-product-name__extra"></\r\n\t')
-    name = name1 + " " + name2
+    soup = soup
+    name = getSpan(soup, "span", "class", "_brand_name")
+    name += " " + getSpan(soup, "span", "class", "b-product-name__extra").strip('\r\n\t')
+    
+    print(f"Name: {name}")
 
     # Get stock
-    stock = int(stripper(getSpan(soup, "span", "class", "b-stock-info__amount"), 35, -19))
+    stock = int(getSpan(soup, "span", "class", "b-stock-info__amount").strip("\r\n\t stk"))
     print(f"Stock: {stock}")
 
     # Get price
-    price = int(stripper(getSpan(soup, "span", "class", "b-product-price_"), 35, -21).replace(u'\xa0', u''))
+    price = int(getSpan(soup, "span", "class", "b-product-price_").replace(u'\xa0', u'').strip('\r\n\t,-'))
     print(f"Price: {price}")
 
     return name, price, stock
@@ -57,15 +59,15 @@ def multicom(soup):
 
 def deal(soup):
     # Get name
-    name = (getSpan(soup, "h2", "class", "partname").text).strip('\r\n\t')
+    name = getSpan(soup, "h2", "class", "partname").strip('\r\n\t')
     print(f"Name: {name}")
 
     # Get stock
-    stock = int(str(getSpan(soup, "span", "class", "b-show-stock__quantity").text))
+    stock = int(str(getSpan(soup, "span", "class", "b-show-stock__quantity")))
     print(f"Stock: {stock}")
 
     # Get price
-    price = int((getSpan(soup, "span", "class", "pricedetails relative").text).strip('Nå\r\n\t,-').replace(u'\xa0', u''))
+    price = int((getSpan(soup, "span", "class", "pricedetails relative")).strip('Nå\r\n\t,-').replace(u'\xa0', u''))
     print(f"Price: {price}")
 
     return name, price, stock
