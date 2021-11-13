@@ -55,6 +55,23 @@ def multicom(soup):
     return name, price, stock
 
 
+def deal(soup):
+    # Get name
+    name = (getSpan(soup, "h2", "class", "partname").text).strip('\r\n\t')
+    print(f"Name: {name}")
+
+    # Get stock
+    stock = int(str(getSpan(soup, "span", "class", "b-show-stock__quantity").text))
+    print(f"Stock: {stock}")
+
+    # Get price
+    price = int((getSpan(soup, "span", "class", "pricedetails relative").text).strip('Nå\r\n\t,-').replace(u'\xa0', u''))
+    print(f"Price: {price}")
+
+    return name, price, stock
+
+
+
 def Notify(alert):
     apiKey = ""
     with open("pushbullet_api_key.txt", "r") as f:
@@ -74,6 +91,8 @@ def site(url, data):
         writeConfig(komplett(get(url)), data, url)
     elif "multicom" in url:
         writeConfig(multicom(get(url)), data, url)
+    elif "deal" in url:
+        writeConfig(deal(get(url)), data, url)
     else:
         print(f"Not supported url {url}")
 
