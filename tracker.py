@@ -43,7 +43,6 @@ def multicom(soup):
     soup = soup
     name = getSpan(soup, "span", "class", "_brand_name")
     name += " " + getSpan(soup, "span", "class", "b-product-name__extra").strip('\r\n\t')
-    
     print(f"Name: {name}")
 
     # Get stock
@@ -71,7 +70,6 @@ def deal(soup):
     print(f"Price: {price}")
 
     return name, price, stock
-
 
 
 def Notify(alert):
