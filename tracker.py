@@ -13,18 +13,14 @@ def get(url):
 def getSpan(soup, types, attr, txt):
     if attr or txt != None:
         for item in soup.find_all(types, attrs={attr: txt}):
-            return item.text
+            return item.text.strip('\r\n\t,-stkNå').replace(u'\xa0', u'')
     elif attr or txt == None:
         return soup.find_all(types)
 
 
-def stripper(string, bef, aft):
-    return (str(string))[bef:aft]
-
-
 def komplett(soup):
     # Get name
-    name = getSpan(soup, "span", "data-bind", "text: webtext1").strip(" stk. på lager")
+    name = getSpan(soup, "span", "data-bind", "text: webtext1")
     print(f"Name: {name}")
 
     # Get stock
@@ -32,7 +28,7 @@ def komplett(soup):
     print(f"Stock: {stock}")
 
     # Get price
-    price = int(getSpan(soup, "span", "class", "product-price-now").replace(u'\xa0', u'').strip(",-"))
+    price = int(getSpan(soup, "span", "class", "product-price-now"))
     print(f"Price: {price}")
 
     return name, price, stock
@@ -40,17 +36,16 @@ def komplett(soup):
 
 def multicom(soup):
     # Get name
-    soup = soup
     name = getSpan(soup, "span", "class", "_brand_name")
-    name += " " + getSpan(soup, "span", "class", "b-product-name__extra").strip('\r\n\t')
+    name += " " + getSpan(soup, "span", "class", "b-product-name__extra")
     print(f"Name: {name}")
 
     # Get stock
-    stock = int(getSpan(soup, "span", "class", "b-stock-info__amount").strip("\r\n\t stk"))
+    stock = int(getSpan(soup, "span", "class", "b-stock-info__amount"))
     print(f"Stock: {stock}")
 
     # Get price
-    price = int(getSpan(soup, "span", "class", "b-product-price_").replace(u'\xa0', u'').strip('\r\n\t,-'))
+    price = int(getSpan(soup, "span", "class", "b-product-price_"))
     print(f"Price: {price}")
 
     return name, price, stock
@@ -58,7 +53,7 @@ def multicom(soup):
 
 def deal(soup):
     # Get name
-    name = getSpan(soup, "h2", "class", "partname").strip('\r\n\t')
+    name = getSpan(soup, "h2", "class", "partname")
     print(f"Name: {name}")
 
     # Get stock
@@ -66,7 +61,7 @@ def deal(soup):
     print(f"Stock: {stock}")
 
     # Get price
-    price = int((getSpan(soup, "span", "class", "pricedetails relative")).strip('Nå\r\n\t,-').replace(u'\xa0', u''))
+    price = int(getSpan(soup, "span", "class", "pricedetails relative"))
     print(f"Price: {price}")
 
     return name, price, stock
