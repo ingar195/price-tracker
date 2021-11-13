@@ -137,7 +137,7 @@ def writeConfig(returnFromStore, data, url):
             data[url]["Stock"] = stock
 
     with open(jsonFile, "w+") as f:
-        f.write(json.dumps(data))
+        f.write(json.dumps(data, indent=4, sort_keys=True))
 
     Notify(alert)
 
