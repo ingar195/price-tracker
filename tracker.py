@@ -18,7 +18,7 @@ def getSpan(soup, types, attr, txt):
     if attr or txt != None:
         logging.debug("attr or txt != None")
         for item in soup.find_all(types, attrs={attr: txt}):
-            stripped = item.text.strip('\r\n\t,-stkNå').replace(u'\xa0', u'')
+            stripped = item.text.strip('\r\n\t,-stkNå+').replace(u'\xa0', u'')
             #logging.debug(stripped)
             return stripped
     elif attr or txt == None:
@@ -35,7 +35,7 @@ def komplett(soup):
     logging.info(f"Name: {name}")
 
     # Get stock
-    stock = int(getSpan(soup, "span", "class", "stockstatus-stock-details").strip(" stk. på lager"))
+    stock = int(getSpan(soup, "span", "class", "stockstatus-stock-details").strip(" stk. på lager").replace("+", ""))
     logging.info(f"Stock: {stock}")
 
     # Get price
