@@ -2,72 +2,91 @@ import requests
 from bs4 import BeautifulSoup
 from pushbullet import Pushbullet
 import json
+import logging
 
 
 def get(url):
+    logging.debug("Get")
     response = requests.get(url)
     soup = BeautifulSoup(response.text, "html.parser")
     return soup
 
 
 def getSpan(soup, types, attr, txt):
+    logging.debug(f"soup, {types}, {attr}, {txt}")
+
     if attr or txt != None:
+        logging.debug("attr or txt != None")
         for item in soup.find_all(types, attrs={attr: txt}):
-            return item.text.strip('\r\n\t,-stkNå').replace(u'\xa0', u'')
+            stripped = item.text.strip('\r\n\t,-stkNå').replace(u'\xa0', u'')
+            #logging.debug(stripped)
+            return stripped
     elif attr or txt == None:
-        return soup.find_all(types)
+        retvar = soup.find_all(types)
+        logging.debug(retvar)
+        return retvar
 
 
 def komplett(soup):
+    logging.debug("komplett(soup)")
+
     # Get name
     name = getSpan(soup, "span", "data-bind", "text: webtext1")
-    print(f"Name: {name}")
+    logging.info(f"Name: {name}")
 
     # Get stock
     stock = int(getSpan(soup, "span", "class", "stockstatus-stock-details").strip(" stk. på lager"))
-    print(f"Stock: {stock}")
+    logging.info(f"Stock: {stock}")
 
     # Get price
     price = int(getSpan(soup, "span", "class", "product-price-now"))
-    print(f"Price: {price}")
+    logging.info(f"Price: {price}")
 
+    logging.debug(name, price, stock)
     return name, price, stock
 
 
 def multicom(soup):
+    logging.debug("multicom(soup)")
+
     # Get name
     name = getSpan(soup, "span", "class", "_brand_name")
     name += " " + getSpan(soup, "span", "class", "b-product-name__extra")
-    print(f"Name: {name}")
+    logging.info(f"Name: {name}")
 
     # Get stock
     stock = int(getSpan(soup, "span", "class", "b-stock-info__amount"))
-    print(f"Stock: {stock}")
+    logging.info(f"Stock: {stock}")
 
     # Get price
     price = int(getSpan(soup, "span", "class", "b-product-price_"))
-    print(f"Price: {price}")
+    logging.info(f"Price: {price}")
 
+    logging.debug(name, price, stock)
     return name, price, stock
 
 
 def deal(soup):
+    logging.debug("deal(soup)")
+
     # Get name
     name = getSpan(soup, "h2", "class", "partname")
-    print(f"Name: {name}")
+    logging.info(f"Name: {name}")
 
     # Get stock
     stock = int(str(getSpan(soup, "span", "class", "b-show-stock__quantity")))
-    print(f"Stock: {stock}")
+    logging.info(f"Stock: {stock}")
 
     # Get price
     price = int(getSpan(soup, "span", "class", "pricedetails relative"))
-    print(f"Price: {price}")
+    logging.info(f"Price: {price}")
 
+    logging.debug(name, price, stock)
     return name, price, stock
 
 
 def Notify(alert):
+    logging.debug(f"Notify({alert})")
     apiKey = ""
     with open("pushbullet_api_key.txt", "r") as f:
         apiKey = f.readline()
@@ -76,27 +95,32 @@ def Notify(alert):
         cnt = 0
         for al in alert:
             if cnt != 0:
-                print(f"Allert {al}")
+                logging.info(f"Allert {al}")
                 pb.push_note(alert[0], al)
             cnt += 1
 
 
 def site(url, data):
+    logging.debug(f"site({url}, {data})")
     if "komplett" in url:
+        logging.debug("komplett")
         writeConfig(komplett(get(url)), data, url)
     elif "multicom" in url:
+        logging.debug("multicom")
         writeConfig(multicom(get(url)), data, url)
     elif "deal" in url:
+        logging.debug("deal")
         writeConfig(deal(get(url)), data, url)
     else:
-        print(f"Not supported url {url}")
+        logging.error(f"Not supported url {url}")
 
 
 def writeConfig(returnFromStore, data, url):
+    logging.debug(f"writeConfig({returnFromStore}, {data}, {url})")
     name = returnFromStore[0]
     price = returnFromStore[1]
     stock = returnFromStore[2]
-    print(f"name: {name}, stock: {stock}, price: {price}")
+    logging.info(f"name: {name}, stock: {stock}, price: {price}")
     alert = [name]
     if data[url]["Name"] == "":
         data[url]["Name"] = name
@@ -119,13 +143,25 @@ def writeConfig(returnFromStore, data, url):
 
 
 def readConfig():
+    logging.debug("readConfig()")
     with open(jsonFile, "r") as jf:
         return json.load(jf)
 
+
+logging.basicConfig(
+    format='%(asctime)s %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
+    datefmt='%d-%m-%Y:%H:%M:%S',
+    level=logging.INFO,
+    handlers=[
+        logging.FileHandler("Tracker.log"),
+        logging.StreamHandler()
+    ])
+
+logger = logging.getLogger('my_app')
 
 jsonFile = "products.json"
 data = readConfig()
 
 for url in data:
-    print(url)
+    logging.info(f"Checking: {url}")
     site(url, data)
