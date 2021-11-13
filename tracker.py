@@ -13,7 +13,7 @@ def get(url):
 def getSpan(soup, types, attr, txt):
     if attr or txt != None:
         for item in soup.find_all(types, attrs={attr: txt}):
-            return item.text.strip('\r\n\t')
+            return item.text.strip('\r\n\t,-stkNå').replace(u'\xa0', u'')
     elif attr or txt == None:
         return soup.find_all(types)
 
@@ -28,7 +28,7 @@ def komplett(soup):
     print(f"Stock: {stock}")
 
     # Get price
-    price = int(getSpan(soup, "span", "class", "product-price-now").replace(u'\xa0', u'').strip(",-"))
+    price = int(getSpan(soup, "span", "class", "product-price-now"))
     print(f"Price: {price}")
 
     return name, price, stock
@@ -41,11 +41,11 @@ def multicom(soup):
     print(f"Name: {name}")
 
     # Get stock
-    stock = int(getSpan(soup, "span", "class", "b-stock-info__amount").strip("stk"))
+    stock = int(getSpan(soup, "span", "class", "b-stock-info__amount"))
     print(f"Stock: {stock}")
 
     # Get price
-    price = int(getSpan(soup, "span", "class", "b-product-price_").replace(u'\xa0', u'').strip(',-'))
+    price = int(getSpan(soup, "span", "class", "b-product-price_"))
     print(f"Price: {price}")
 
     return name, price, stock
@@ -53,7 +53,7 @@ def multicom(soup):
 
 def deal(soup):
     # Get name
-    name = getSpan(soup, "h2", "class", "partname").strip('\r\n\t')
+    name = getSpan(soup, "h2", "class", "partname")
     print(f"Name: {name}")
 
     # Get stock
@@ -61,7 +61,7 @@ def deal(soup):
     print(f"Stock: {stock}")
 
     # Get price
-    price = int((getSpan(soup, "span", "class", "pricedetails relative")).strip('Nå,-').replace(u'\xa0', u''))
+    price = int(getSpan(soup, "span", "class", "pricedetails relative"))
     print(f"Price: {price}")
 
     return name, price, stock
