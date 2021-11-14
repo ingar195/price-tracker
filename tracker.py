@@ -165,6 +165,9 @@ def writeConfig(returnFromStore, data, url):
             alert.append("Stock changed from {} to {}".format(data[url]["Stock"], stock))
             data[url]["Stock"] = stock
 
+        if data[url]["Name"] != name:
+            data[url]["Name"] = name
+
     with open(jsonFile, "w+") as f:
         f.write(json.dumps(data, indent=4, sort_keys=True))
 
