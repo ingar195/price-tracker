@@ -12,19 +12,23 @@ def get(url):
     return soup
 
 
+def norChars(var):
+    logging.debug("norChars({var})")
+
+    var = var.replace("\u00e5", "a")
+    logging.debug(var)
+    return var
+
+
 def getSpan(soup, types, attr, txt):
     logging.debug(f"soup, {types}, {attr}, {txt}")
 
     if attr or txt != None:
         logging.debug("attr or txt != None")
         for item in soup.find_all(types, attrs={attr: txt}):
-            stripped = item.text.strip('\r\n\t,-stkNå+').replace(u'\xa0', u'')
-            #logging.debug(stripped)
+            stripped = norChars(item.text.strip('\r\n\t,-stkNå+').replace(u'\xa0', u''))
+            # logging.debug(stripped)
             return stripped
-    elif attr or txt == None:
-        retvar = soup.find_all(types)
-        logging.debug(retvar)
-        return retvar
 
 
 def komplett(soup):
@@ -85,6 +89,24 @@ def deal(soup):
     return name, price, stock
 
 
+def prisguiden(soup):
+    logging.debug("prisguiden(soup)")
+
+    # Get name
+    name = getSpan(soup, "span", "class", "product-shortname")
+    logging.info(f"Name: {name}")
+
+    # Get stock
+    stock = str(getSpan(soup, "span", "class", "quote"))
+    logging.info(f"Stock: {stock}")
+
+    price = int(getSpan(soup, "a", "class", "button-to-shop number").strip("RekordbilligTilbud stk. pa lager"))
+    logging.info(f"Price: {price}")
+
+    logging.debug(name, price, stock)
+    return name, price, stock
+
+
 def Notify(alert):
     logging.debug(f"Notify({alert})")
     apiKey = ""
@@ -105,12 +127,19 @@ def site(url, data):
     if "komplett" in url:
         logging.debug("komplett")
         writeConfig(komplett(get(url)), data, url)
+
     elif "multicom" in url:
         logging.debug("multicom")
         writeConfig(multicom(get(url)), data, url)
+
     elif "deal" in url:
         logging.debug("deal")
         writeConfig(deal(get(url)), data, url)
+
+    elif "prisguiden" in url:
+        logging.debug("deal")
+        writeConfig(prisguiden(get(url)), data, url)
+
     else:
         logging.error(f"Not supported url {url}")
 
