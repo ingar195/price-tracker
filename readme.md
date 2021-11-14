@@ -39,3 +39,4 @@ This repo is for tracking prices and stock for websites
 * [Komplett.no](https://www.komplett.no/)
 * [Multicom.no](https://www.multicom.no/)
 * [Deal.no](https://deal.no/)
+* [Prisguiden.no](https://prisguiden.no/)
