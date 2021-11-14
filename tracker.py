@@ -29,10 +29,6 @@ def getSpan(soup, types, attr, txt):
             stripped = norChars(item.text.strip('\r\n\t,-stkNå+').replace(u'\xa0', u''))
             # logging.debug(stripped)
             return stripped
-    elif attr or txt == None:
-        retvar = soup.find_all(types)
-        logging.debug(retvar)
-        return retvar
 
 
 def komplett(soup):
@@ -101,12 +97,11 @@ def prisguiden(soup):
     logging.info(f"Name: {name}")
 
     # Get stock
-    stock = (str(getSpan(soup, "span", "class", "quote")))
+    stock = str(getSpan(soup, "span", "class", "quote"))
     logging.info(f"Stock: {stock}")
 
-    # Get price
-    # price = (str(getSpan(soup, 'a class="button-to-shop number"', None, None)))
-    # logging.info(f"Price: {price}")
+    price = int(getSpan(soup, "a", "class", "button-to-shop number").strip("RekordbilligTilbud stk. pa lager"))
+    logging.info(f"Price: {price}")
 
     logging.debug(name, price, stock)
     return name, price, stock
@@ -144,7 +139,7 @@ def site(url, data):
     elif "prisguiden" in url:
         logging.debug("deal")
         writeConfig(prisguiden(get(url)), data, url)
-        
+
     else:
         logging.error(f"Not supported url {url}")
 
@@ -185,7 +180,7 @@ def readConfig():
 logging.basicConfig(
     format='%(asctime)s %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
     datefmt='%d-%m-%Y:%H:%M:%S',
-    level=logging.DEBUG,
+    level=logging.INFO,
     handlers=[
         logging.FileHandler("Tracker.log"),
         logging.StreamHandler()
