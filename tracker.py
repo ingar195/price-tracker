@@ -111,7 +111,7 @@ def Notify(alert):
     logging.debug(f"Notify({alert})")
     apiKey = ""
     with open("pushbullet_api_key.txt", "r") as f:
-        apiKey = f.readline()
+        apiKey = f.readline().rstrip()
     pb = Pushbullet(apiKey)
     if len(alert) != 1:
         cnt = 0
