@@ -107,6 +107,49 @@ def prisguiden(soup):
     return name, price, stock
 
 
+def farmasiet(soup):
+    logging.debug("Farmasiet")
+
+    # Get name
+    name = getSpan(soup, "span", "class", "Product__Brand")
+    logging.info(f"Name: {name}")
+
+    # Get stock
+    try:
+        stock = str(getSpan(soup, "span", "class", "Product__Availability")).strip("\r\n").lstrip(" ").rstrip(" ")
+        logging.info(f"Stock: {stock}")
+    except:
+        stock = str(getSpan(soup, "span", "class", "Product__Availability Product__Availability--NotInStock")).strip("\r\n").lstrip(" ").rstrip(" ")
+        logging.info(f"Stock: {stock}")
+
+    price = int(getSpan(soup, "span", "class", "Product__PriceDefault"))
+    logging.info(f"Price: {price}")
+
+    logging.debug(name, price, stock)
+    return name, price, stock
+
+
+def apotekfordeg(soup):
+    logging.debug("apotekfordeg")
+
+    # Get name
+    name = getSpan(soup, "span", "class", "product_title entry-title")
+    logging.info(f"Name: {name}")
+
+    # Get stock
+    price = str(getSpan(soup, "span", "class", "regular-price-text")).strip("\r\n").lstrip(" ").rstrip(" ")
+    logging.info(f"Stock: {price}")
+    try:
+        stock = str(getSpan(soup, "p", "class", "stock in-stock"))
+        logging.info(f"Price: {stock}")
+    except:
+        stock = str(getSpan(soup, "p", "class", "stock out-of-stock"))
+        logging.info(f"Price: {stock}")
+
+    logging.debug(name, price, stock)
+    return name, price, stock     
+
+
 def Notify(alert):
     logging.debug(f"Notify({alert})")
     apiKey = ""
@@ -140,6 +183,14 @@ def site(url, data):
         logging.debug("deal")
         writeConfig(prisguiden(get(url)), data, url)
 
+    elif "farmasiet" in url:
+        logging.debug("farmasiet")
+        writeConfig(farmasiet(get(url)), data, url)
+
+    elif "apotekfordeg" in url:
+        logging.debug("apotekfordeg")
+        writeConfig(apotekfordeg(get(url)), data, url)
+
     else:
         logging.error(f"Not supported url {url}")
 
@@ -158,7 +209,7 @@ def writeConfig(returnFromStore, data, url):
 
     else:
         if data[url]["Price"] != price:
-            alert.append("Price changed from {} to {}".format(data[url]["Price"], price))
+            alert.append("Price changed from {} to {}".format(name, data[url]["Price"], price))
             data[url]["Price"] = price
 
         if data[url]["Stock"] != stock:
