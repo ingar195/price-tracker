@@ -231,8 +231,8 @@ def readConfig():
     with open(jsonFile, "r") as jf:
         return json.load(jf)
 
+os.chdir(os.path.dirname(__file__)) 
 
-input()
 logging.basicConfig(
     format='%(asctime)s %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
     datefmt='%d-%m-%Y:%H:%M:%S',
@@ -243,8 +243,6 @@ logging.basicConfig(
     ])
 
 logger = logging.getLogger('my_app')
-
-os.chdir(os.path.dirname(__file__)) 
 
 jsonFile = "products.json"
 data = readConfig()
