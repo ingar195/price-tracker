@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from pushbullet import Pushbullet
 import json
 import logging
+import os
 
 
 def get(url):
@@ -116,10 +117,10 @@ def farmasiet(soup):
 
     # Get stock
     try:
-        stock = str(getSpan(soup, "span", "class", "Product__Availability")).strip("\r\n").lstrip(" ").rstrip(" ")
+        stock = str(getSpan(soup, "span", "class", "Product__Availability")).lstrip(" ").rstrip(" ")
         logging.info(f"Stock: {stock}")
     except:
-        stock = str(getSpan(soup, "span", "class", "Product__Availability Product__Availability--NotInStock")).strip("\r\n").lstrip(" ").rstrip(" ")
+        stock = str(getSpan(soup, "span", "class", "Product__Availability Product__Availability--NotInStock")).lstrip(" ").rstrip(" ")
         logging.info(f"Stock: {stock}")
 
     price = int(getSpan(soup, "span", "class", "Product__PriceDefault"))
@@ -231,6 +232,7 @@ def readConfig():
         return json.load(jf)
 
 
+input()
 logging.basicConfig(
     format='%(asctime)s %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
     datefmt='%d-%m-%Y:%H:%M:%S',
@@ -241,6 +243,8 @@ logging.basicConfig(
     ])
 
 logger = logging.getLogger('my_app')
+
+os.chdir(os.path.dirname(__file__)) 
 
 jsonFile = "products.json"
 data = readConfig()
