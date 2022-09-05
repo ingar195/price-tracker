@@ -4,7 +4,7 @@ from pushbullet import Pushbullet
 import json
 import logging
 import os
-
+import time
 
 def get(url):
     logging.debug("Get")
@@ -154,7 +154,7 @@ def apotekfordeg(soup):
 def Notify(alert):
     logging.debug(f"Notify({alert})")
     apiKey = ""
-    with open("pushbullet_api_key.txt", "r") as f:
+    with open("config/pushbullet_api_key.txt", "r") as f:
         apiKey = f.readline().rstrip()
     pb = Pushbullet(apiKey)
     if len(alert) != 1:
@@ -238,15 +238,19 @@ logging.basicConfig(
     datefmt='%d-%m-%Y:%H:%M:%S',
     level=logging.INFO,
     handlers=[
-        logging.FileHandler("Tracker.log"),
+        logging.FileHandler("log/Tracker.log"),
         logging.StreamHandler()
     ])
 
 logger = logging.getLogger('my_app')
 
-jsonFile = "products.json"
-data = readConfig()
+jsonFile = "config/products.json"
 
-for url in data:
-    logging.info(f"Checking: {url}")
-    site(url, data)
+while True:
+    time.sleep(10)
+
+    data = readConfig()
+
+    for url in data:
+        logging.info(f"Checking: {url}")
+        site(url, data)
