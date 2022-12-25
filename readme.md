@@ -27,7 +27,7 @@ This repo is for tracking prices and stock for websites
         }
     }
     ``` 
-* Go to [this site](https://www.pushbullet.com/#settings) and press the Create Access Token button
+* Go to the [PushBullet API key site](https://www.pushbullet.com/#settings) and press the Create Access Token button
 * Copy the token
 * Create a file called "pushbullet_api_key.txt" and paste your pushbullet api key inside 
 * Download the pushbullet app on yor phone and sign in
@@ -40,3 +40,5 @@ This repo is for tracking prices and stock for websites
 * [Multicom.no](https://www.multicom.no/)
 * [Deal.no](https://deal.no/)
 * [Prisguiden.no](https://prisguiden.no/)
+    * [Search page](https://prisguiden.no/kategorier/tv?f[867][]=OLED&f[m][]=Philips&s=price%20asc) and specified [products](https://prisguiden.no/produkt/philips-55oled705-12-498120) 
+    * Stock will be N/A on search pages since there is no stock information there 
