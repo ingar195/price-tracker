@@ -41,4 +41,4 @@ This repo is for tracking prices and stock for websites
 * [Deal.no](https://deal.no/)
 * [Prisguiden.no](https://prisguiden.no/)
     * [Search page](https://prisguiden.no/kategorier/tv?f[867][]=OLED&f[m][]=Philips&s=price%20asc) and specified [products](https://prisguiden.no/produkt/philips-55oled705-12-498120) 
-    * Stock will be N/A on search pages since there is no stock information there 
+    * Stock will be N/A on search pages, since there is no stock information there 
