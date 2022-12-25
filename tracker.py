@@ -235,7 +235,7 @@ def writeConfig(returnFromStore, data, url):
             data[url]["Name"] = name
 
     with open(jsonFile, "w+") as f:
-        f.write(json.dumps(data, indent=4, sort_keys=True))
+        f.write(json.dumps(data, indent=4))
 
     Notify(alert)
 
