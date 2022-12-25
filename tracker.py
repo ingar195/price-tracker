@@ -1,10 +1,11 @@
-import requests
-from bs4 import BeautifulSoup
 from pushbullet import Pushbullet
-import json
+from bs4 import BeautifulSoup
+import argparse
+import requests
 import logging
-import os
+import json
 import time
+
 
 def get(url):
     logging.debug("Get")
@@ -239,30 +240,42 @@ def writeConfig(returnFromStore, data, url):
     Notify(alert)
 
 
-def readConfig():
+def readConfig(jsonFile):
     logging.debug("readConfig()")
     with open(jsonFile, "r") as jf:
         return json.load(jf)
 
-os.chdir(os.path.dirname(__file__)) 
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--config_file", help="Path to the config file",default="products.json")
+parser.add_argument("--log_file", help="Path to the log file", default="Tracker.log")
+parser.add_argument("--interval", type=int, help="Time in seconds for", default=10)
+
+args = parser.parse_args()
+
+config = args.config_file
+log_file = args.log_file
+interval = args.interval
+
 
 logging.basicConfig(
     format='%(asctime)s %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
     datefmt='%d-%m-%Y:%H:%M:%S',
     level=logging.INFO,
     handlers=[
-        logging.FileHandler("Tracker.log"),
+        logging.FileHandler(log_file),
         logging.StreamHandler()
     ])
 
 logger = logging.getLogger('my_app')
 
-jsonFile = "products.json"
+
+jsonFile = config
 
 while True:
-    time.sleep(10)
+    time.sleep(interval)
 
-    data = readConfig()
+    data = readConfig(jsonFile)
 
     for url in data:
         logging.info(f"Checking: {url}")
