@@ -165,6 +165,25 @@ def apotekfordeg(soup):
     return name, price, stock     
 
 
+def prisjakt(soup):
+    logging.debug("prisjakt")
+
+    # Get name
+    name = getSpan(soup, "h1", "class", "Text--1d9bgzp PIFba h2text Title-sc-16x82tr-2 fDYedx")
+    logging.info(f"Name: {name}")
+
+    # Get stock
+    price = str(getSpan(soup, "h4", "data-test", "PriceLabel"))
+    logging.info(f"Stock: {price}")
+   
+    stock = "N/A"
+    logging.info(f"Price: {stock}")
+
+
+    logging.debug(name, price, stock)
+    return name, price, stock    
+
+
 def Notify(alert):
     logging.debug(f"Notify({alert})")
     apiKey = ""
@@ -205,6 +224,10 @@ def site(url, data):
     elif "apotekfordeg" in url:
         logging.debug("apotekfordeg")
         writeConfig(apotekfordeg(get(url)), data, url)
+
+    elif "prisjakt" in url:
+        logging.debug("prisjakt")
+        writeConfig(prisjakt(get(url)), data, url)
 
     else:
         logging.error(f"Not supported url {url}")
