@@ -92,16 +92,29 @@ def deal(soup):
 
 def prisguiden(soup):
     logging.debug("prisguiden(soup)")
+    try:
+        # Get name
+        name = getSpan(soup, "span", "class", "product-shortname")
+        name = getSpan(soup, "span", "class", "product-shortname")
+        logging.info(f"Name: {name}")
 
-    # Get name
-    name = getSpan(soup, "span", "class", "product-shortname")
-    logging.info(f"Name: {name}")
+        # Get stock
+        stock = str(getSpan(soup, "span", "class", "quote"))
+        logging.info(f"Stock: {stock}")
 
-    # Get stock
-    stock = str(getSpan(soup, "span", "class", "quote"))
-    logging.info(f"Stock: {stock}")
+        price = int(getSpan(soup, "p", "class", "lowest-price number").strip("RekordbilligTilbud stk. pa lager"))
+        price = int(getSpan(soup, "a", "class", "button-to-shop number").strip("RekordbilligTilbud stk. pa lager"))
+    except:
+        # Get name
+        name = getSpan(soup, "h4", "class", "manufacturer")
+        logging.info(f"Name: {name}")
 
-    price = int(getSpan(soup, "a", "class", "button-to-shop number").strip("RekordbilligTilbud stk. pa lager"))
+        # Get stock
+        stock = "N/A"
+        logging.info(f"Stock: {stock}")
+
+        price = int(getSpan(soup, "p", "class", "lowest-price number").strip("RekordbilligTilbud stk. pa lager"))
+
     logging.info(f"Price: {price}")
 
     logging.debug(name, price, stock)
@@ -154,7 +167,7 @@ def apotekfordeg(soup):
 def Notify(alert):
     logging.debug(f"Notify({alert})")
     apiKey = ""
-    with open("config/pushbullet_api_key.txt", "r") as f:
+    with open("pushbullet_api_key.txt", "r") as f:
         apiKey = f.readline().rstrip()
     pb = Pushbullet(apiKey)
     if len(alert) != 1:
@@ -210,7 +223,7 @@ def writeConfig(returnFromStore, data, url):
 
     else:
         if data[url]["Price"] != price:
-            alert.append("Price changed from {} to {}".format(name, data[url]["Price"], price))
+            alert.append("Price for {} changed from {} to {}".format(name, data[url]["Price"], price))
             data[url]["Price"] = price
 
         if data[url]["Stock"] != stock:
@@ -238,13 +251,13 @@ logging.basicConfig(
     datefmt='%d-%m-%Y:%H:%M:%S',
     level=logging.INFO,
     handlers=[
-        logging.FileHandler("log/Tracker.log"),
+        logging.FileHandler("Tracker.log"),
         logging.StreamHandler()
     ])
 
 logger = logging.getLogger('my_app')
 
-jsonFile = "config/products.json"
+jsonFile = "products.json"
 
 while True:
     time.sleep(10)
