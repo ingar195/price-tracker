@@ -228,7 +228,7 @@ def writeConfig(returnFromStore, data, url):
             data[url]["Price"] = price
 
         if data[url]["Stock"] != stock:
-            alert.append("Stock changed from {} to {}".format(data[url]["Stock"], stock))
+            alert.append("Stock for {} changed from {} to {}".format(name, data[url]["Stock"], stock))
             data[url]["Stock"] = stock
 
         if data[url]["Name"] != name:
