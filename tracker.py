@@ -278,7 +278,6 @@ args = parser.parse_args()
 
 config = args.config_file
 log_file = args.log_file
-interval = args.interval
 api_key = args.api_key
 
 
