@@ -194,7 +194,7 @@ def Notify(alert):
         cnt = 0
         for al in alert:
             if cnt != 0:
-                logging.info(f"Allert {al}")
+                logging.info(f"Alert {al}")
                 pb.push_note(alert[0], al)
             cnt += 1
 
