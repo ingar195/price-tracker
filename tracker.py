@@ -187,7 +187,7 @@ def prisjakt(soup):
 def Notify(alert):
     logging.debug(f"Notify({alert})")
     apiKey = ""
-    with open("pushbullet_api_key.txt", "r") as f:
+    with open(api_key, "r") as f:
         apiKey = f.readline().rstrip()
     pb = Pushbullet(apiKey)
     if len(alert) != 1:
@@ -273,12 +273,14 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--config_file", help="Path to the config file",default="products.json")
 parser.add_argument("--log_file", help="Path to the log file", default="Tracker.log")
 parser.add_argument("--interval", type=int, help="Time in seconds for", default=10)
+parser.add_argument("--api_key", help="File that contains push bullet api key", default="pushbullet_api_key.txt")
 
 args = parser.parse_args()
 
 config = args.config_file
 log_file = args.log_file
 interval = args.interval
+api_key = args.api_key
 
 
 logging.basicConfig(
