@@ -272,7 +272,6 @@ def readConfig(jsonFile):
 parser = argparse.ArgumentParser()
 parser.add_argument("--config_file", help="Path to the config file",default="products.json")
 parser.add_argument("--log_file", help="Path to the log file", default="Tracker.log")
-parser.add_argument("--interval", type=int, help="Time in seconds for", default=10)
 parser.add_argument("--api_key", help="File that contains push bullet api key", default="pushbullet_api_key.txt")
 
 args = parser.parse_args()
@@ -297,11 +296,9 @@ logger = logging.getLogger('my_app')
 
 jsonFile = config
 
-while True:
-    time.sleep(interval)
 
-    data = readConfig(jsonFile)
+data = readConfig(jsonFile)
 
-    for url in data:
-        logging.info(f"Checking: {url}")
-        site(url, data)
+for url in data:
+    logging.info(f"Checking: {url}")
+    site(url, data)
