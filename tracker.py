@@ -63,17 +63,3 @@ def check_all_products() -> None:
 
         except Exception:
             logger.exception(f"Failed to check {product.url}")
-
-
-URL = "https://www.komplett.no/product/1333771/gaming/gaming-utstyr/gamingmus/corsair-sabre-v2-pro-gamingmus"
-URL2 = "https://www.prisjakt.no/product.php?p=7207194"
-
-def main() -> None:
-    configure_logging()
-    init_db()
-    track(URL)
-    track(URL2)
-
-
-if __name__ == "__main__":
-    main()
