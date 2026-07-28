@@ -56,8 +56,13 @@ def home(request: Request):
 @app.post("/track")
 def add_product(url: str = Form(...)):
     logger.info(f"Received request to track: {url}")
-    track(url)
-    return RedirectResponse(url="/", status_code=303)
+    try:
+        track(url)
+        return RedirectResponse(url="/", status_code=303)
+    except ValueError as e:
+        logger.error(f"Error tracking {url}: {e}")
+        error_msg = str(e)
+        return RedirectResponse(url=f"/?error={error_msg}", status_code=303)
 
 @app.post("/delete")
 def delete_product(product_id: int = Form(...)):

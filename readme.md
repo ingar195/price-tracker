@@ -10,8 +10,17 @@ Built as a learning project — the design favors clarity and easy extension
 ## Features
 
 - **Web UI** to add/remove tracked products and pick an alert channel per product
-- **Supported stores**: [Komplett](https://www.komplett.no) and [Prisjakt](https://www.prisjakt.no)
-  (Prisjakt is a price-comparison site — the price tracked is the lowest offer shown)
+- **Tested stores** (verified to work):
+  - [Komplett](https://www.komplett.no)
+  - [Prisjakt](https://www.prisjakt.no)
+  - [Apotek For Deg](https://www.apotekfordeg.no)
+  - [Power](https://www.power.no)
+  - [Elkjøp](https://www.elkjop.no)
+  - [NetOnNet](https://www.netonnet.no)
+  - [Farmasiet](https://www.farmasiet.no)
+  - [Deal](https://www.deal.no)
+  - [Multicom](https://www.multicom.no)
+  - **Plus any other site with JSON-LD product data** — even unlisted sites may work if they expose product info in the standard format
 - **Price history** stored in SQLite, one row per check, never overwritten
 - **Automatic re-checking** on a schedule (APScheduler), no manual refresh needed
 - **Discord alerts** when a product's price drops compared to the previous check
@@ -107,14 +116,23 @@ SCRAPERS = {
 }
 ```
 
-Both current sites happen to expose product data via JSON-LD, so they share
-the same `ld_json()` parser. To add a new site:
+All current sites expose product data via JSON-LD, so they share the same `ld_json()` parser.
 
-1. Check its page source for a `<script type="application/ld+json">` block
-   containing `"@type": "Product"`. If present, just add the domain to
-   `SCRAPERS` pointing at `ld_json` — no new code needed.
-2. If not, write a small parser function for that site (same return shape:
-   `(title, price, in_stock, currency)`) and point the domain at it instead.
+### To add a new site:
+
+1. **Check if it has JSON-LD** — inspect the page source for a `<script type="application/ld+json">` block containing `"@type": "Product"`. 
+2. **If yes** — just add the domain to `SCRAPERS` pointing at `ld_json`:
+   ```python
+   SCRAPERS = {
+       ...
+       "newsite.no": ld_json,
+   }
+   ```
+3. **If no** — write a custom parser function with the same return shape `(title, price, in_stock, currency)` and point to it instead.
+
+### Automatic fallback:
+
+If a URL's domain is **not in `SCRAPERS`**, the app automatically tries the generic `ld_json` scraper anyway. This means you can track products from unlisted sites if they use JSON-LD structure — you don't need to update `SCRAPERS` first. Only add a domain to `SCRAPERS` if you've verified it works or want to explicitly support it.
 
 No changes to `tracker.py`, `main.py`, or the database are needed to add a site.
 

@@ -39,5 +39,16 @@
       </div>
       {% endfor %}
     </div>
+
+    <script>
+      // Show popup if error exists
+      const urlParams = new URLSearchParams(window.location.search);
+      const error = urlParams.get('error');
+      if (error) {
+        alert('Unsupported Site or Invalid URL: ' + error);
+        // Clear error from URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    </script>
   </body>
 </html>

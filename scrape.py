@@ -11,7 +11,19 @@ logger = logging.getLogger(__name__)
 
 
 def fetch_html(url: str) -> str:
-    HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) PriceTracker/0.1"}
+    if not url.startswith(('http://', 'https://')):
+        raise ValueError("URL must start with http:// or https://")
+    
+    HEADERS = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Accept-Encoding": "gzip, deflate",
+        "Referer": "https://www.google.com/",
+        "DNT": "1",
+        "Connection": "keep-alive",
+        "Upgrade-Insecure-Requests": "1",
+    }
     resp = httpx.get(url, headers=HEADERS, timeout=10.0, follow_redirects=True)
     resp.raise_for_status()
     return resp.text
@@ -19,7 +31,7 @@ def fetch_html(url: str) -> str:
 
 def ld_json(soup) -> tuple[str, float, bool | None, str]:
     """
-    Using the <script type="application/ld+json"> tag, extract product info.
+    Using the <script type="application/ld+json"> tag, extract product info.    
     Extracts:
     * product name
     * price
@@ -32,25 +44,41 @@ def ld_json(soup) -> tuple[str, float, bool | None, str]:
     for script in scripts:
         logger.debug(f"Found <script type='application/ld+json'>: {script.string[:100]}...")
         data = json.loads(script.string)
-        logger.debug(f"Root @type: {data.get('@type')}, has @graph: {bool(data.get('@graph'))}")
         
-        # Skip if it's not a Product and has no @graph
-        if data.get("@type") != "Product" and not data.get("@graph"):
-            logger.debug("Not a Product JSON-LD or missing @graph, skipping.")
+        product = None
+        
+        # Try to find Product in @graph
+        if data.get("@graph"):
+            for item in data["@graph"]:
+                if item.get("mainEntity") and item["mainEntity"].get("@type") == "Product":
+                    product = item["mainEntity"]
+                    break
+                # Check if item itself is a Product (power.no format)
+                elif item.get("@type") == "Product":
+                    product = item
+                    break
+        
+        # Try direct Product type (for sites without @graph)
+        if not product and data.get("@type") == "Product":
+            product = data
+        
+        if not product:
+            logger.debug("No Product JSON-LD found, skipping.")
             continue
         
-        # If @graph exists, extract mainEntity
-        if data.get("@graph"):
-            data = data["@graph"][0]["mainEntity"]
-        
-        logger.debug(f"Extracted JSON-LD data: {data}")
+        logger.debug(f"Extracted JSON-LD data: {product}")
         
         # Extract product info
-        offers = data["offers"]
-        price = float(offers.get("lowPrice") or offers["price"])
-        product_name = data.get("name")
-        currency = offers.get("priceCurrency")
-        availability = offers.get("availability")
+        offers = product.get("offers")
+        
+        # Handle offers as array or object
+        if isinstance(offers, list):
+            offers = offers[0]  # Take first offer
+        logger.debug(f"Extracted offers data: {offers}")
+        price = float(offers.get("lowPrice") or offers["priceSpecification"][0].get("price"))
+        product_name = product.get("name") or data.get("name")
+        currency = offers.get("priceCurrency") or offers["priceSpecification"][0].get("priceCurrency")
+        availability = offers.get("availability") or offers.get("availability")
         in_stock = ("InStock" in availability) if availability is not None else None
         
         logger.info(f"Extracted product info: {product_name}, {price}, {in_stock}, {currency}")
@@ -59,14 +87,7 @@ def ld_json(soup) -> tuple[str, float, bool | None, str]:
     # If we get here, no matching script was found
     raise ValueError("No valid Product JSON-LD found in page")
 
-
-# def prisjakt_price_scraper(soup) -> tuple[str, float, bool, str]:
-#     scripts = soup.find_all("script", type="application/ld+json")
-#     for script in scripts:        
-#         data = json.loads(script.string)   
-#         if data.get("@type") != "Product":
-#                 continue
-        
+       
 SCRAPERS = {
     "komplett.no": ld_json,
     "prisjakt.no": ld_json,
@@ -74,6 +95,9 @@ SCRAPERS = {
     "deal.no": ld_json,
     "multicom.no": ld_json,
     "apotekfordeg.no": ld_json,
+    "power.no": ld_json,
+    "elkjop.no": ld_json,
+    "netonnet.no": ld_json,
 }
 def extract_price(html: str, url: str) -> tuple[str, float, bool | None, str]:
     soup = BeautifulSoup(html, "html.parser")
