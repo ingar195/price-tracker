@@ -1,12 +1,11 @@
-FROM python:latest
+FROM python:3.12-slim
 
-RUN mkdir log
-# COPY config config
-# COPY requirements.txt /
-# COPY tracker.py /
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN pip3 install -r requirements.txt
-
-CMD [ "python3", "tracker.py"]
+EXPOSE 8000
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
