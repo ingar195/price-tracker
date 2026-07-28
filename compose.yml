@@ -1,0 +1,12 @@
+services:
+  price-tracker:
+    build: .
+    container_name: price-tracker
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - ./.env:/app/.env
+      - ./pricetracker.db:/app/pricetracker.db
+    env_file:
+      - .env

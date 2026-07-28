@@ -1,2 +1,10 @@
-pushbullet.py
-beautifulsoup4
+python-multipart
+python-dotenv
+apscheduler
+sqlalchemy
+requests
+fastapi
+uvicorn
+jinja2
+httpx
+bs4

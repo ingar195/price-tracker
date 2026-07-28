@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Price Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Tracked Products</h1>
+
+      <form class="add-form" action="/track" method="post">
+        <input type="text" name="url" placeholder="Paste a supported product URL" required />
+        <button type="submit">Add</button>
+      </form>
+
+      {% if not products %}
+      <p class="empty">Nothing tracked yet — paste a URL above to get started.</p>
+      {% endif %}
+
+      {% for product in products %}
+      <div class="card">
+        <div class="card-main">
+          <a href="{{ product.url }}">{{ product.title }}</a>
+          <span class="price">{{ product.latest_price }} kr</span>
+        </div>
+        <div class="card-actions">
+          <form action="/set_alert" method="post">
+            <input type="hidden" name="product_id" value="{{ product.id }}" />
+            <select name="alert_type" onchange="this.form.submit()">
+              <option value="" {% if not product.alert_type %}selected{% endif %}>Alerts off</option>
+              <option value="discord" {% if product.alert_type == "discord" %}selected{% endif %}>Discord</option>
+            </select>
+          </form>
+          <form action="/delete" method="post">
+            <button class="delete-btn" type="submit" name="product_id" value="{{ product.id }}">Delete</button>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </body>
+</html>
